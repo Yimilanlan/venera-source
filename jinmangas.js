@@ -7,13 +7,30 @@ class JinmangasSource extends ComicSource {
     baseUrl = "https://jinmangas.com";
 
     // ----------------------------------------------------------------------
-    // 👇 核心修复区：提供基础模块对象，防止解析器深层检查属性时触发 TypeError
+    // 👇 终极防崩溃区：提供结构完整的空模块，满足 Dart 端所有深层探查
     // ----------------------------------------------------------------------
-    explore = [];                             // 探索页面配置
-    category = { title: "分类", parts: [] };   // 分类配置
-    categoryComics = {};                      // 分类漫画加载
-    favorite = {};                            // 收藏功能相关
-    account = {};                             // 账户功能相关
+    explore = [
+        {
+            title: "主页 (空)",
+            type: "single",
+            load: async () => { return []; },
+            loadThumbnails: async () => { return []; } // 阻止 explore[0].loadThumbnails 报错
+        }
+    ];                             
+    category = { title: "分类", parts: [] };   
+    categoryComics = {
+        load: async () => { return []; },
+        loadThumbnails: async () => { return []; }     // 阻止 categoryComics.loadThumbnails 报错
+    };                      
+    favorite = {
+        multiFolder: false,
+        add: async () => {},
+        delete: async () => {}
+    };                            
+    account = {
+        login: async () => {},
+        logout: () => {}
+    };
 
     // 1. 漫画详情加载
     detail = {
@@ -86,6 +103,7 @@ class JinmangasSource extends ComicSource {
                 };
             });
             return { comics: comics, maxPage: 99 };
-        }
+        },
+        loadThumbnails: async () => { return []; } // 阻止 search.loadThumbnails 报错
     };
 }
