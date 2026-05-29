@@ -1,8 +1,14 @@
 [
   {
+    "id": "jinmangas",
     "name": "JinMangas",
     "filename": "jinmangas.js",
     "version": "1.0.0",
-    "description": "JinMangas Source"
+    "description": "JinMangas Source",
+    "author": "Yimi",
+    "baseUrl": "https://toptoon.com",
+    "icon": "",
+    "language": "en",
+    "type": "comic"
   }
 ]
