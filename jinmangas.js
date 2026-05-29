@@ -7,30 +7,11 @@ class JinmangasSource extends ComicSource {
     baseUrl = "https://jinmangas.com";
 
     // ----------------------------------------------------------------------
-    // 👇 终极防崩溃区：提供结构完整的空模块，满足 Dart 端所有深层探查
+    // 👇 终极解法：彻底移除 explore，只保留基础对象防止 Parent Undefined 报错
     // ----------------------------------------------------------------------
-    explore = [
-        {
-            title: "主页 (空)",
-            type: "single",
-            load: async () => { return []; },
-            loadThumbnails: async () => { return []; } // 阻止 explore[0].loadThumbnails 报错
-        }
-    ];                             
-    category = { title: "分类", parts: [] };   
-    categoryComics = {
-        load: async () => { return []; },
-        loadThumbnails: async () => { return []; }     // 阻止 categoryComics.loadThumbnails 报错
-    };                      
-    favorite = {
-        multiFolder: false,
-        add: async () => {},
-        delete: async () => {}
-    };                            
-    account = {
-        login: async () => {},
-        logout: () => {}
-    };
+    categoryComics = {};                      
+    favorite = {};                            
+    account = {};                             
 
     // 1. 漫画详情加载
     detail = {
@@ -92,18 +73,3 @@ class JinmangasSource extends ComicSource {
             let comics = doc.querySelectorAll(".c-tabs-item__content").map(e => {
                 let a = e.querySelector("h3 a");
                 let img = e.querySelector("img");
-                
-                let href = a.attributes["href"];
-                let comicId = href.replace(this.baseUrl + "/manga/", "").replace("/", "");
-                
-                return {
-                    id: comicId,
-                    title: a.text?.trim(),
-                    cover: img?.attributes["src"] || img?.attributes["data-src"] || ""
-                };
-            });
-            return { comics: comics, maxPage: 99 };
-        },
-        loadThumbnails: async () => { return []; } // 阻止 search.loadThumbnails 报错
-    };
-}
