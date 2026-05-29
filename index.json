@@ -2,12 +2,12 @@
   {
     "id": "jinmangas",
     "name": "JinMangas",
-    "filename": "sources/jinmangas.js",
     "version": "1.0.0",
     "description": "JinMangas Source",
     "author": "Yimi",
     "baseUrl": "https://jinmangas.com",
     "icon": "https://cdn.jsdelivr.net/gh/Yimilanlan/venera-source/icon.png",
-    "enabled": true
+    "enabled": true,
+    "filename": "sources/jinmangas.js"
   }
 ]
