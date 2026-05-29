@@ -7,24 +7,23 @@ class JinmangasSource extends ComicSource {
     baseUrl = "https://jinmangas.com";
 
     // ====================================================================
-    // 👇 绝对防御区：初始化所有 Venera 可能探查的模块，阻断 undefined 报错
+    // 👇 究极防御区：占位 Venera 所有隐藏支持的高级模块，彻底阻断崩溃
     // ====================================================================
-    
-    // 1. 必须使用合法的 type（如 multiPageComicList），避免 Unknown type 报错
-    explore = [
-        {
-            title: "首页 (空)",
-            type: "multiPageComicList",
-            load: async () => { return { comics: [], maxPage: 1 }; }
-        }
-    ];
-
-    // 2. 将所有潜在的模块声明为空对象，防止抛出 TypeError
-    update = {};
     category = {};
     categoryComics = {};
     favorite = {};
     account = {};
+    update = {};
+    // 新增的隐藏探查模块
+    comments = {};
+    tags = {};
+    tagComics = {};
+    author = {};
+    authorComics = {};
+    related = {};
+    relatedComics = {};
+    rank = {};
+    ranking = {};
 
     // ====================================================================
     // 👇 核心业务逻辑区
