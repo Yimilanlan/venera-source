@@ -6,12 +6,29 @@ class JinmangasSource extends ComicSource {
     url = "https://raw.githubusercontent.com/Yimilanlan/venera-source/main/jinmangas.js";
     baseUrl = "https://jinmangas.com";
 
-    // ----------------------------------------------------------------------
-    // 👇 终极解法：彻底移除 explore，只保留基础对象防止 Parent Undefined 报错
-    // ----------------------------------------------------------------------
-    categoryComics = {};                      
-    favorite = {};                            
-    account = {};                             
+    // ====================================================================
+    // 👇 绝对防御区：初始化所有 Venera 可能探查的模块，阻断 undefined 报错
+    // ====================================================================
+    
+    // 1. 必须使用合法的 type（如 multiPageComicList），避免 Unknown type 报错
+    explore = [
+        {
+            title: "首页 (空)",
+            type: "multiPageComicList",
+            load: async () => { return { comics: [], maxPage: 1 }; }
+        }
+    ];
+
+    // 2. 将所有潜在的模块声明为空对象，防止抛出 TypeError
+    update = {};
+    category = {};
+    categoryComics = {};
+    favorite = {};
+    account = {};
+
+    // ====================================================================
+    // 👇 核心业务逻辑区
+    // ====================================================================
 
     // 1. 漫画详情加载
     detail = {
