@@ -1,8 +1,9 @@
 [
   {
     "name": "Jinmangas",
-    "filename": "jinmangas.js",
+    "key": "jinmangas",
     "version": "1.0.0",
-    "description": "自制 Jinmangas 漫画源"
+    "description": "自制 Jinmangas 漫画源",
+    "url": "https://raw.githubusercontent.com/Yimilanlan/venera-source/main/jinmangas.js"
   }
 ]
