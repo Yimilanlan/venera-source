@@ -6,9 +6,10 @@
     "version": "1.0.0",
     "description": "JinMangas Source",
     "author": "Yimi",
-    "baseUrl": "https://toptoon.com",
+    "baseUrl": "https://jinmangas.com",
     "icon": "",
     "language": "en",
-    "type": "comic"
+    "type": "comic",
+    "enabled": true
   }
 ]
