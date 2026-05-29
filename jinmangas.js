@@ -1,26 +1,20 @@
-class JinMangas extends ComicSource {
+export default {
+  name: "JinMangas",
+  key: "jinmangas",
+  version: "1.0.0",
+  minAppVersion: "1.11.0",
+  url: "https://jinmangas.com",
 
-  constructor() {
-    super({
-      name: "JinMangas",
-      key: "jinmangas",
-      version: "1.0.0",
-      minAppVersion: "1.0.0",
-      url: "https://jinmangas.com"
-    })
-  }
-
-  headers = {
+  headers: {
     "Referer": "https://jinmangas.com/",
     "User-Agent":
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  }
+  },
 
   async search(keyword) {
 
     const res = await Network.get(
-      `${this.url}/?s=${encodeURIComponent(keyword)}&post_type=wp-manga`,
-      this.headers
+      `https://jinmangas.com/?s=${encodeURIComponent(keyword)}&post_type=wp-manga`
     )
 
     const html = res.body
@@ -36,6 +30,8 @@ class JinMangas extends ComicSource {
 
       comics.push({
         title: match[2],
+        subTitle: "",
+        cover: "",
         url: match[1]
       })
 
@@ -44,5 +40,3 @@ class JinMangas extends ComicSource {
     return comics
   }
 }
-
-register(new JinMangas())
