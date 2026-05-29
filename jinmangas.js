@@ -3,14 +3,21 @@ class JinmangasSource extends ComicSource {
     key = "jinmangas";
     version = "1.0.0";
     minAppVersion = "1.0.0";
-    // 你的 GitHub 仓库中对应文件的直链（用于 Venera 内的未来更新）
     url = "https://raw.githubusercontent.com/Yimilanlan/venera-source/main/jinmangas.js";
     baseUrl = "https://jinmangas.com";
+
+    // ----------------------------------------------------------------------
+    // 👇 核心修复区：提供基础模块对象，防止解析器深层检查属性时触发 TypeError
+    // ----------------------------------------------------------------------
+    explore = [];                             // 探索页面配置
+    category = { title: "分类", parts: [] };   // 分类配置
+    categoryComics = {};                      // 分类漫画加载
+    favorite = {};                            // 收藏功能相关
+    account = {};                             // 账户功能相关
 
     // 1. 漫画详情加载
     detail = {
         load: async (id) => {
-            // id 为漫画的 slug，如 'wireless-onahole'
             let res = await Network.get(`${this.baseUrl}/manga/${id}/`);
             let doc = new HtmlDocument(res.body);
             
@@ -33,16 +40,14 @@ class JinmangasSource extends ComicSource {
             let res = await Network.get(`${this.baseUrl}/manga/${id}/`);
             let doc = new HtmlDocument(res.body);
             
-            // 解析包含章节链接的列表
             let chapters = doc.querySelectorAll("li.wp-manga-chapter").map(e => {
                 let a = e.querySelector("a");
                 return {
-                    id: a.attributes["href"], // 技巧：直接将完整的章节 URL 作为 id 传递给下游
+                    id: a.attributes["href"],
                     title: a.text?.trim()
                 };
             });
             
-            // Venera 一般习惯旧章节在前，可按需 return chapters.reverse();
             return chapters;
         }
     };
@@ -50,24 +55,20 @@ class JinmangasSource extends ComicSource {
     // 3. 漫画图片加载
     image = {
         load: async (chapterId) => {
-            // 此时的 chapterId 是上一步传过来的完整 URL
             let res = await Network.get(chapterId);
             let doc = new HtmlDocument(res.body);
             
-            // Madara 主题通常把图片放在 .reading-content 容器中
             let images = doc.querySelectorAll(".reading-content img").map(e => {
                 return e.attributes["src"] || e.attributes["data-src"]?.trim();
             });
             
-            // 过滤空节点，返回纯图片 URL 数组
             return images.filter(url => url != null && url !== "");
         }
     };
 
-    // 4. 搜索功能支持 (可选)
+    // 4. 搜索功能支持
     search = {
         load: async (keyword, options, page) => {
-            // WordPress 默认的搜索路径机制
             let res = await Network.get(`${this.baseUrl}/page/${page}/?s=${encodeURIComponent(keyword)}&post_type=wp-manga`);
             let doc = new HtmlDocument(res.body);
             
@@ -75,7 +76,6 @@ class JinmangasSource extends ComicSource {
                 let a = e.querySelector("h3 a");
                 let img = e.querySelector("img");
                 
-                // 从网址中截取出纯 ID，如 /manga/wireless-onahole/ -> wireless-onahole
                 let href = a.attributes["href"];
                 let comicId = href.replace(this.baseUrl + "/manga/", "").replace("/", "");
                 
@@ -85,7 +85,7 @@ class JinmangasSource extends ComicSource {
                     cover: img?.attributes["src"] || img?.attributes["data-src"] || ""
                 };
             });
-            return { comics: comics, maxPage: 99 }; // maxPage 是给 Venera 的翻页标识
+            return { comics: comics, maxPage: 99 };
         }
     };
 }
