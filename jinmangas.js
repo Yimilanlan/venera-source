@@ -1,14 +1,14 @@
 class JinMangas extends ComicSource {
 
-  name = "JinMangas"
-
-  key = "jinmangas"
-
-  version = "1.0.0"
-
-  minAppVersion = "1.0.0"
-
-  url = "https://jinmangas.com"
+  constructor() {
+    super({
+      name: "JinMangas",
+      key: "jinmangas",
+      version: "1.0.0",
+      minAppVersion: "1.0.0",
+      url: "https://jinmangas.com"
+    })
+  }
 
   headers = {
     "Referer": "https://jinmangas.com/",
@@ -43,6 +43,6 @@ class JinMangas extends ComicSource {
 
     return comics
   }
-
 }
-new JinMangas()
+
+register(new JinMangas())
