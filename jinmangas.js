@@ -1,4 +1,4 @@
-export 默认 {
+module。exports = {
   id: "jinmangas",
   name: "JinMangas",
   version: "1.0.0",
@@ -10,51 +10,44 @@ export 默认 {
   },
 
   async search(keyword) {
-    try {
-      const url =
-        "https://jinmangas.com/?s=" +
+    const res = await Network.get(
+      "https://jinmangas.com/?s=" +
         encodeURIComponent(keyword) +
         "&post_type=wp-manga"
+    )
 
-      const res = await Network.get(url)
-      const html = res?.body || ""
+    const html = res?.body || ""
 
-      const comics = []
+    const comics = []
 
-      const reg =
-        /<a href="(https:\/\/jinmangas\.com\/manga\/[^"]+)".*?title="([^"]+)"/gs
+    const reg =
+      /<a href="(https:\/\/jinmangas\.com\/manga\/[^"]+)".*?title="([^"]+)"/gs
 
-      let match
-      while ((match = reg.exec(html)) !== null) {
-        comics.push({
-          title: match?.[2] || "Unknown",
-          subTitle: "",
-          cover: "",
-          url: match?.[1] || ""
-        })
-      }
+    let match
 
-      return comics
-    } catch (e) {
-      return []
+    while ((match = reg.exec(html)) !== null) {
+      comics.push({
+        title: match?.[2] || "",
+        subTitle: "",
+        cover: "",
+        url: match?.[1] || ""
+      })
     }
+
+    return comics
   },
 
   async detail(url) {
-    try {
-      if (!url) return null
+    if (!url) return null
 
-      const res = await Network.get(url)
-      const html = res?.body || ""
+    const res = await Network.get(url)
+    const html = res?.body || ""
 
-      return {
-        title: "",
-        cover: "",
-        description: "",
-        chapters: []
-      }
-    } catch (e) {
-      return null
+    return {
+      title: "",
+      cover: "",
+      description: "",
+      chapters: []
     }
   }
 }
