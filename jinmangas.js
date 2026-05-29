@@ -7,7 +7,7 @@ class JinmangasSource extends ComicSource {
     baseUrl = "https://jinmangas.com";
 
     // ----------------------------------------------------------------------
-    // 👇 终极解法：彻底移除 explore，只保留基础对象防止 Parent Undefined 报错
+    // 👇 终极解法：彻底移除 explore，只保留基础对象防止 Parent Undefined 报错1
     // ----------------------------------------------------------------------
     categoryComics = {};                      
     favorite = {};                            
