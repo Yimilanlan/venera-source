@@ -7,7 +7,7 @@ class JinmangasSource extends ComicSource {
     baseUrl = "https://jinmangas.com";
 
     // ----------------------------------------------------------------------
-    // 👇 终极解法：彻底移除 explore，只保留基础对象防止 Parent Undefined 报错1
+    // 👇 终极解法：彻底移除 explore，只保留基础对象防止 Parent Undefined 报错
     // ----------------------------------------------------------------------
     categoryComics = {};                      
     favorite = {};                            
@@ -73,3 +73,17 @@ class JinmangasSource extends ComicSource {
             let comics = doc.querySelectorAll(".c-tabs-item__content").map(e => {
                 let a = e.querySelector("h3 a");
                 let img = e.querySelector("img");
+                
+                let href = a.attributes["href"];
+                let comicId = href.replace(this.baseUrl + "/manga/", "").replace("/", "");
+                
+                return {
+                    id: comicId,
+                    title: a.text?.trim(),
+                    cover: img?.attributes["src"] || img?.attributes["data-src"] || ""
+                };
+            });
+            return { comics: comics, maxPage: 99 };
+        }
+    };
+}
