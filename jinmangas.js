@@ -10,42 +10,51 @@ export 默认 {
   },
 
   async search(keyword) {
-    const res = await Network.get(
-      `https://jinmangas.com/?s=${encodeURIComponent(keyword)}&post_type=wp-manga`
-    )
+    try {
+      const url =
+        "https://jinmangas.com/?s=" +
+        encodeURIComponent(keyword) +
+        "&post_type=wp-manga"
 
-    const html = res.body || ""
+      const res = await Network.get(url)
+      const html = res?.body || ""
 
-    const comics = []
+      const comics = []
 
-    const reg =
-      /<a href="(https:\/\/jinmangas\.com\/manga\/[^"]+)".*?title="([^"]+)"/gs
+      const reg =
+        /<a href="(https:\/\/jinmangas\.com\/manga\/[^"]+)".*?title="([^"]+)"/gs
 
-    let match
+      let match
+      while ((match = reg.exec(html)) !== null) {
+        comics.push({
+          title: match?.[2] || "Unknown",
+          subTitle: "",
+          cover: "",
+          url: match?.[1] || ""
+        })
+      }
 
-    while ((match = reg.exec(html)) !== null) {
-      comics.push({
-        title: match[2] || "",
-        subTitle: "",
-        cover: "",
-        url: match[1] || ""
-      })
+      return comics
+    } catch (e) {
+      return []
     }
-
-    return comics
   },
 
   async detail(url) {
-    if (!url) return { title: "", cover: "", description: "", chapters: [] }
+    try {
+      if (!url) return null
 
-    const res = await Network.get(url)
-    const html = res.body || ""
+      const res = await Network.get(url)
+      const html = res?.body || ""
 
-    return {
-      title: "",
-      cover: "",
-      description: "",
-      chapters: []
+      return {
+        title: "",
+        cover: "",
+        description: "",
+        chapters: []
+      }
+    } catch (e) {
+      return null
     }
   }
 }
