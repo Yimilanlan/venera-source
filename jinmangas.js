@@ -1,80 +1,67 @@
-/* =========================
-   VENERA 1.11.x SOURCE TEMPLATE
-   Stable / No Invalid Content
-   ========================= */
 
-// ===== 基础信息（必须全 String 安全） =====
-const source = {
-  id: "jinmangas",
-  name: "JinMangas",
-  version: "1.0.0",
-  baseUrl: "https://jinmangas.com",
+/**
+ * VENERA 1.11.x DESCRIPTOR SOURCE
+ * (Parser-compatible format)
+ */
 
-  headers: {
-    Referer: "https://jinmangas.com/",
-    "User-Agent": "Mozilla/5.0"
-  }
-}
+(function () {
+  const source = {
+    id: "jinmangas",
+    name: "JinMangas",
+    version: "1.0.0",
+    baseUrl: "https://jinmangas.com",
 
-// ===== 工具函数（防 null 专用） =====
-function safe(v, fallback = "") {
-  return v == null ? fallback : v
-}
+    headers: {
+      Referer: "https://jinmangas.com/",
+      "User-Agent": "Mozilla/5.0"
+    },
 
-// ===== 搜索 =====
-async function search(keyword) {
-  try {
-    const url =
-      source.baseUrl +
-      "/?s=" +
-      encodeURIComponent(keyword) +
-      "&post_type=wp-manga"
+    async search(keyword) {
+      const res = await Network.get(
+        "https://jinmangas.com/?s=" +
+          encodeURIComponent(keyword) +
+          "&post_type=wp-manga"
+      )
 
-    const res = await Network.get(url)
-    const html = safe(res && res.body, "")
+      const html = res?.body || ""
 
-    const comics = []
+      const comics = []
 
-    const reg =
-      /<a href="(https:\/\/jinmangas\.com\/manga\/[^"]+)".*?title="([^"]+)"/gs
+      const reg =
+        /<a href="(https:\/\/jinmangas\.com\/manga\/[^"]+)".*?title="([^"]+)"/gs
 
-    let match
+      let match
+      while ((match = reg.exec(html)) !== null) {
+        comics.push({
+          title: match?.[2] || "",
+          subTitle: "",
+          cover: "",
+          url: match?.[1] || ""
+        })
+      }
 
-    while ((match = reg.exec(html)) !== null) {
-      comics.push({
-        title: safe(match[2]),
-        subTitle: "",
+      return comics
+    },
+
+    async detail(url) {
+      if (!url) return null
+
+      const res = await Network.get(url)
+      const html = res?.body || ""
+
+      return {
+        title: "",
         cover: "",
-        url: safe(match[1])
-      })
+        description: "",
+        chapters: []
+      }
     }
-
-    return comics
-  } catch (e) {
-    return []
   }
-}
 
-// ===== 详情页 =====
-async function detail(url) {
-  try {
-    if (!url) return null
-
-    const res = await Network.get(url)
-    const html = safe(res && res.body, "")
-
-    return {
-      title: "",
-      cover: "",
-      description: "",
-      chapters: []
-    }
-  } catch (e) {
-    return null
+  // ⭐ 关键：注册给 Venera parser
+  if (typeof globalThis !== "undefined") {
+    globalThis.source = source
   }
-}
 
-// ===== 必须导出（关键！Venera识别点） =====
-this.source = source
-this.search = search
-this.detail = detail
+  return source
+})()
